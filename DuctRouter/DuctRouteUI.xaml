@@ -1,0 +1,40 @@
+﻿<Window x:Class="DuctRouter.DuctRouteUI"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:DuctRouter"
+             mc:Ignorable="d" 
+             Width="400" Height="300" Loaded="Window_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="130"></RowDefinition>
+            <RowDefinition Height="130"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"></ColumnDefinition>
+            <ColumnDefinition Width="200"></ColumnDefinition>
+            
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Content="DUCT ROUTER" Foreground="Black" RenderTransformOrigin="0.491,0.54" />
+        <Button Grid.Row="0" Grid.Column="0" x:Name="SelectTerminal" Content="Add Terminal" Click="SelectTerminal_Click" Margin="10,35,102,70"/>
+        <Button Grid.Row="0" Grid.Column="0" x:Name="SelectDuctMain" Content="Add Duct Main" Margin="10,65,102,40" Click="SelectDuctMain_Click"/>
+        <Button Grid.Row="0" Grid.Column="1" x:Name="Route" Content="Route" Margin="55,65,55,40" Click="Route_Click"/>
+        <Label Grid.Row="0" Grid.Column="0" x:Name="TerminalQty" Content="{Binding TerminalCount}" Margin="98,35,10,70"/>
+        <Label Grid.Row="0" Grid.Column="0" x:Name="DuctQty" Content="{Binding DuctCount}" Margin="98,62,10,38" >
+            <UIElement.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </UIElement.RenderTransform>
+        </Label>
+
+        <Button Grid.Row="1" Grid.Column="0" x:Name="Export" Content="Export System" Click="Create_Click" Margin="19,95,81,5"/>
+        <ComboBox Grid.Row="1" Grid.ColumnSpan="2" x:Name="systemComboBox" Margin="20,10,21,94"/>
+
+    </Grid>
+</Window>
