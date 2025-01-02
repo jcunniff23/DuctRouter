@@ -101,7 +101,7 @@ namespace DuctRouter
         }
         public DuctRouteUI(ExternalCommandData commandData)
         {
-            InitializeComponent();
+            //InitializeComponent();
             _uidoc = commandData.Application.ActiveUIDocument;
             _doc = commandData.Application.ActiveUIDocument.Document;
 
@@ -124,7 +124,7 @@ namespace DuctRouter
                 //TaskDialog.Show("WINDOW LOADED", $"{mechSystemCollector.Count()}");
 
                 var items = mechSystemCollector.ToList();
-                systemComboBox.ItemsSource = items;
+                //systemComboBox.ItemsSource = items;
             }
             catch (Exception)
             {

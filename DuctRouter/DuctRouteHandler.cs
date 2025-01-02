@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.ApplicationServices;
-using DuctRouter.Service;
 
 namespace DuctRouter
 {
@@ -108,16 +107,24 @@ namespace DuctRouter
                     {
                         TaskDialog.Show("Terminal Location", $"Terminal Location: {loc.X}, {loc.Y}, {loc.Z}");
                     }
+                try
+                {
+                    // Initialize RoutingService
+                    _routingService = new RoutingService(ductBbox, terminalLocs);
 
-                // Initialize RoutingService
-                _routingService = new RoutingService(ductBbox, terminalLocs);
+                }
+                catch (Exception ex)
+                {
+                    TaskDialog.Show("Error", $"Exception: {ex.Message}\n{ex.StackTrace}");
+                }
+
             }
             catch (Exception ex)
             {
                 TaskDialog.Show("DuctRouteHandler", $"Error: {ex.Message}\n{ex.StackTrace}");
             }
 
-
+            
 
 
             ShowRouteResultDialog();
@@ -125,11 +132,21 @@ namespace DuctRouter
 
         private void ShowRouteResultDialog()
         {
-            //var message = _routingService.DebugHandler();
-            var routes= _routingService.OptimizeRoutes();
-            var message = routes.Select(r => r.ToString()).ToString();
 
-            TaskDialog.Show("DuctRouteHandler Result", message);
+
+            try
+            {
+                //var message = _routingService.DebugHandler();
+                var routes= _routingService.OptimizeRoutes();
+                var message = routes.Select(r => r.ToString()).ToString();
+
+                TaskDialog.Show("DuctRouteHandler Result", message);
+               
+            }
+            catch (Exception ex)
+            {
+                TaskDialog.Show("Error", $"Exception: {ex.Message}\n{ex.StackTrace}");
+            }
         }
 
         public void PlaceDuctRoutes() 

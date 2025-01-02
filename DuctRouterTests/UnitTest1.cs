@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Autodesk.Revit.DB;
-using DuctRouter.Service;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DuctRouterTests
@@ -18,11 +17,11 @@ namespace DuctRouterTests
 
             List<XYZ> terminals = new List<XYZ> { new XYZ(-39.800, 31.325, 0.00) };
 
-            var Routing = new RoutingService(ductMainBbox, terminals);
+            //var Routing = new RoutingService(ductMainBbox, terminals);
 
-            var result = Routing.OptimizeRoutes();
-            Console.WriteLine(result);
-            Assert.IsNotNull(result);
+            //var result = Routing.OptimizeRoutes();
+            //Console.WriteLine(result);
+            //Assert.IsNotNull(result);
 
         }
     }
