@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
  
-using Google.OrTools.ConstraintSolver;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;    // namespace that contains all of the needed geometry manipulation and data structures from revit
 
@@ -96,76 +95,20 @@ namespace DuctRouter
 
         }
 
-        //Now implementing a meta heuristic approach with the OR Tools RoutingManager (from the ConstraintSolver namespace)
         public List<(XYZ, XYZ)> OptimizeRoutes()
         {
             //Manage and setup routing data and indicdes
 
-            int numNodes = _terminalLocations.Count * 2;
-            int numVehicles = _terminalLocations.Count; //for now keep vehicles to 1, vehicles will determine how many branches you want
-            int depot = 0; //not sure what to make my depot value
-
-            RoutingIndexManager manager = new RoutingIndexManager(numNodes, numVehicles, depot);
-
-            //Routing model is the real solver 
-            RoutingModel routing = new RoutingModel(manager);
-
-            RoutingSearchParameters searchParameters = new RoutingSearchParameters();
-            searchParameters.FirstSolutionStrategy = FirstSolutionStrategy.Types.Value.PathCheapestArc;
-            searchParameters.LocalSearchMetaheuristic = LocalSearchMetaheuristic.Types.Value.GuidedLocalSearch;
-            searchParameters.LogSearch = true;
-
-            InitializeLocations();
-            var costEvaluator = CreateCostAndOrthogonalEvaluator(manager, routing);
-            routing.SetArcCostEvaluatorOfAllVehicles(costEvaluator);
-
-            Assignment solution = routing.SolveWithParameters(searchParameters);
-
-
-            if (solution != null)
-            {
-
-                var routes = ExtractRoutes(routing, solution, manager);
-                return routes;
-            }
-            else
-            {
-                return new List<(XYZ, XYZ)>();
-            }
-
+           
 
             //After branch off point, determine length for next duct on branch,
             //iterate through until all ducts in new branch are made
             //solve for shortest distance
+            return new List<(XYZ, XYZ)>();
         }
 
         // Helper method to create a cost evaluator for the arc (distance-based)
-        private int CreateCostAndOrthogonalEvaluator(RoutingIndexManager manager, RoutingModel routing)
-        {
-            // Return a callback function for computing cost (distance) and enforcing orthogonal constraints
-            return routing.RegisterTransitCallback((long fromIndex, long toIndex) =>
-            {
-                int fromNode = manager.IndexToNode((int)fromIndex);
-                int toNode = manager.IndexToNode((int)toIndex);
-
-                XYZ start = GetLocation(fromNode, manager);
-                XYZ end = GetLocation(toNode, manager);
-
-                // Check if the move is orthogonal
-                bool isOrthogonal = (start.X != end.X && start.Y == end.Y && start.Z == end.Z) ||
-                                    (start.X == end.X && start.Y != end.Y && start.Z == end.Z) ||
-                                    (start.X == end.X && start.Y == end.Y && start.Z != end.Z);
-
-                // If the move is orthogonal, return cost (distance); otherwise, return a large penalty value
-                if (isOrthogonal)
-                {
-                    return (int)Math.Round(start.DistanceTo(end)); // Return cost for orthogonal moves
-                }
-
-                return int.MaxValue; // Penalize non-orthogonal moves
-            });
-        }
-
+       
         private bool ValidateOrthogonality(List<(XYZ, XYZ)> routes)
         {
             foreach (var route in routes)
@@ -184,47 +127,8 @@ namespace DuctRouter
             }
             return true;
         }
-
-
-
-        // Helper method to extract and return routes from the solution
-        private List<(XYZ, XYZ)> ExtractRoutes(RoutingModel routing, Assignment solution, RoutingIndexManager manager)
-        {
-            List<(XYZ, XYZ)> routes = new List<(XYZ, XYZ)>();
-
-            // Get the route of the vehicle (assuming only 1 vehicle for now)
-            int vehicleIndex = 0;
-            long index = routing.Start(vehicleIndex);  // Get the starting index of the vehicle route
-            while (!routing.IsEnd(index))
-            {
-                int fromNode = manager.IndexToNode((int)index);
-                index = solution.Value(routing.NextVar(index)); // Get the next index in the route
-                int toNode = manager.IndexToNode((int)index);
-
-                XYZ startLocation = GetLocation(fromNode, manager);
-                XYZ endLocation = GetLocation(toNode, manager);
-                routes.Add((startLocation, endLocation));
-            }
-
-            return routes;
-        }
-
-
-        // Helper method to get the location of a node (terminal or duct)
-        private XYZ GetLocation(long index, RoutingIndexManager manager)
-        {
-            // Convert the solver index to a node ID
-            int nodeId = manager.IndexToNode((int)index);
-
-            // Fetch the corresponding XYZ location
-            if (_nodeLocations.TryGetValue(nodeId, out XYZ location))
-            {
-                return location;
-            }
-
-            throw new ArgumentException($"No location found for node ID {nodeId}");
-        }
-
+       
+       
         public enum BranchMethod
         {
             OnePerBranch,
