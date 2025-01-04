@@ -18,7 +18,7 @@ namespace DuctRouter
         public List<Element> Terminals = new List<Element>();
         public List<Element> DuctMains = new List<Element>();
 
-        private RoutingService _routingService;
+        private Solver.RoutingService _routingService;
 
         public DuctRouteHandler(ExternalCommandData commandData) 
         {
@@ -110,8 +110,9 @@ namespace DuctRouter
                 try
                 {
                     // Initialize RoutingService
-                    _routingService = new RoutingService(ductBbox, terminalLocs);
-
+                    _routingService = new Solver.RoutingService(ductBbox, terminalLocs, 0, 2);
+                    var message = _routingService.PathFindAStar();
+                    TaskDialog.Show("A STAR RESULTS", message);
                 }
                 catch (Exception ex)
                 {
