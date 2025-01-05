@@ -16,6 +16,8 @@ namespace DuctRouter
         private UIDocument _uidoc;
         private readonly Application _app;
 
+        public ExternalCommandData commandData { get; }
+
         public List<Element> Terminals = new List<Element>();
         public List<Element> DuctMains = new List<Element>();
 
@@ -26,6 +28,7 @@ namespace DuctRouter
             _doc = commandData.Application.ActiveUIDocument.Document;
             _uidoc = commandData.Application.ActiveUIDocument;
             _app = commandData.Application.Application;
+            this.commandData = commandData;
         
         }
     
@@ -113,7 +116,10 @@ namespace DuctRouter
                     // Initialize RoutingService
                     _routingService = new RoutingService(ductBbox, terminalLocs, 0, 2);
                     var message = _routingService.PathFindAStar();
-                    TaskDialog.Show("A STAR RESULTS", message);
+                    //TaskDialog.Show("A STAR RESULTS", message);
+                    var analysis = new DuctAnalysis(commandData, _routingService.route, _routingService.grid);
+                    analysis.PaintPath();
+
                 }
                 catch (Exception ex)
                 {

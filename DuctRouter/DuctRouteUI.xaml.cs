@@ -160,7 +160,7 @@ namespace DuctRouter
                 IList<Reference> selectedRef = _uidoc.Selection.PickObjects(ObjectType.Element, new TerminalSelectionFilter(), "Select terminal(s)");
                 var terminalIds = selectedRef.Select(r => r.ElementId).ToList();
                 _terminal = terminalIds.Select(id => _uidoc.Document.GetElement(id)).ToList();
-                TaskDialog.Show("Duct Router", $"Selected {_terminal.Count} terminals.");
+                //TaskDialog.Show("Duct Router", $"Selected {_terminal.Count} terminals.");
 
                 //Reference selectedRef = _uidoc.Selection.PickObject(ObjectType.Element, new TerminalSelectionFilter(), "Select terminal(s)");
                 //var terminalIds = selectedRef.ElementId;
@@ -207,6 +207,11 @@ namespace DuctRouter
             _handler.AddTerminalsToHandler(_terminal);
             _handler.AddDuctsToHandler(_ductMain);
             _handler.RouteAllElements();
+        }
+
+        private void DisplayAnalysis_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

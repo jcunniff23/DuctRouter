@@ -27,9 +27,13 @@ namespace DuctRouter.Solver
         private readonly List<XYZ> _terminalLocations;
         private readonly double? _minClearance; // clearance wanted between new ducts created (in what units??)
         private readonly double? _boundaryMultiplier;
-            //  fudge factor to multiply to the max distance centerlines of duct main to terminals,
-            //  with the goal of creating an easy way for making a "boundary" for the ducts to be solved within.
-            //  this factor is necessary on the Z coordiante because duct elbows often will be larger than expected (radius requirements as a function of duct diameter)
+        //  fudge factor to multiply to the max distance centerlines of duct main to terminals,
+        //  with the goal of creating an easy way for making a "boundary" for the ducts to be solved within.
+        //  this factor is necessary on the Z coordiante because duct elbows often will be larger than expected (radius requirements as a function of duct diameter)
+
+        public List<Node> route;
+
+        public Grid grid { get; private set; }
 
         public RoutingService(BoundingBoxXYZ ductBBox, List<XYZ> terminalLocations, int clearance = 0, int multiplier = 1)
         {
@@ -141,7 +145,9 @@ namespace DuctRouter.Solver
             var PathFinder = new Pathfinder(grid);
 
             var nodes = PathFinder.FindPath(startLoc, endLoc);
-            WriteResultsCSV(nodes, $"AStar_Results_8");
+            this.route = nodes;
+            this.grid = grid;
+            WriteResultsCSV(nodes, $"AStar_Results_9");
 
             foreach (var item in nodes)
             {

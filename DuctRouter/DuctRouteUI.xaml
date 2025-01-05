@@ -5,24 +5,28 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DuctRouter"
              mc:Ignorable="d" 
-             Width="400" Height="300" Loaded="Window_Loaded">
+             Width="400" Height="450" Loaded="Window_Loaded">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="130"></RowDefinition>
-            <RowDefinition Height="130"></RowDefinition>
+            <RowDefinition Height="150"></RowDefinition>
+            <RowDefinition Height="150"></RowDefinition>
+            <RowDefinition Height="150"></RowDefinition>
+
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"></ColumnDefinition>
             <ColumnDefinition Width="200"></ColumnDefinition>
-            
+
         </Grid.ColumnDefinitions>
 
-        <Label Grid.Row="0" Grid.Column="0" Content="DUCT ROUTER" Foreground="Black" RenderTransformOrigin="0.491,0.54" />
-        <Button Grid.Row="0" Grid.Column="0" x:Name="SelectTerminal" Content="Add Terminal" Click="SelectTerminal_Click" Margin="10,35,102,70"/>
-        <Button Grid.Row="0" Grid.Column="0" x:Name="SelectDuctMain" Content="Add Duct Main" Margin="10,65,102,40" Click="SelectDuctMain_Click"/>
-        <Button Grid.Row="0" Grid.Column="1" x:Name="Route" Content="Route" Margin="55,65,55,40" Click="Route_Click"/>
-        <Label Grid.Row="0" Grid.Column="0" x:Name="TerminalQty" Content="{Binding TerminalCount}" Margin="98,35,10,70"/>
-        <Label Grid.Row="0" Grid.Column="0" x:Name="DuctQty" Content="{Binding DuctCount}" Margin="98,62,10,38" >
+        <Label Margin="11,2,89,125">DUCT ROUTER</Label>
+        <Button Grid.Row="0" Grid.Column="0" x:Name="SelectTerminal" Content="Add Terminal" Click="SelectTerminal_Click" Margin="10,28,80,93"/>
+        <Button Grid.Row="0" Grid.Column="0" x:Name="SelectDuctMain" Content="Add Duct Main" Margin="10,68,80,53" Click="SelectDuctMain_Click"/>
+        <Button Grid.Row="0" Grid.Column="1" x:Name="AddObstacle" Content="Add Obstacle" Margin="17,64,73,56"/>
+        <Button Grid.Row="0" Grid.Column="1" x:Name="DrawObstacle" Content="Draw Obstacle" Margin="17,26,73,94"/>
+        <Button Grid.Row="1" x:Name="Route" Content="Route" Margin="12,10,98,111" Click="Route_Click"/>
+        <Label Grid.Row="0" Grid.Column="0" x:Name="TerminalQty" Content="{Binding TerminalCount}" Margin="124,32,185,96" Grid.ColumnSpan="2"/>
+        <Label Grid.Row="0" Grid.Column="0" x:Name="DuctQty" Content="{Binding DuctCount}" Margin="124,69,185,56" Grid.ColumnSpan="2" >
             <UIElement.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform/>
@@ -33,8 +37,9 @@
             </UIElement.RenderTransform>
         </Label>
 
-        <Button Grid.Row="1" Grid.Column="0" x:Name="Export" Content="Export System" Click="Create_Click" Margin="19,95,81,5"/>
-        <ComboBox Grid.Row="1" Grid.ColumnSpan="2" x:Name="systemComboBox" Margin="20,10,21,94"/>
+        <Button Grid.Row="2" Grid.Column="0" x:Name="Export" Content="Export System" Click="Create_Click" Margin="20,75,80,48"/>
+        <ComboBox Grid.Row="2" Grid.ColumnSpan="2" x:Name="systemComboBox" Margin="20,10,21,94"/>
+        <Button Grid.Row="1" x:Name="DisplayAnalysis" Content="Show Analysis" Margin="12,45,98,76" Click="DisplayAnalysis_Click"/>
 
     </Grid>
 </Window>
