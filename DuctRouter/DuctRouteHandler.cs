@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.ApplicationServices;
+using DuctRouter.Solver;
 
 namespace DuctRouter
 {
@@ -110,7 +111,7 @@ namespace DuctRouter
                 try
                 {
                     // Initialize RoutingService
-                    _routingService = new Solver.RoutingService(ductBbox, terminalLocs, 0, 2);
+                    _routingService = new RoutingService(ductBbox, terminalLocs, 0, 2);
                     var message = _routingService.PathFindAStar();
                     TaskDialog.Show("A STAR RESULTS", message);
                 }
@@ -149,6 +150,7 @@ namespace DuctRouter
                 TaskDialog.Show("Error", $"Exception: {ex.Message}\n{ex.StackTrace}");
             }
         }
+
 
         public void PlaceDuctRoutes() 
         { 

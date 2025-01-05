@@ -16,6 +16,7 @@ namespace DuctRouter.Solver
         public int gridX;
         public int gridY;
         public Node parent;
+        public int pCost;
         
         public Node(XYZ _pos, bool _walkable, int gridX, int gridY) 
         {
@@ -25,11 +26,21 @@ namespace DuctRouter.Solver
             this.gridY = gridY;
         }
 
+
+        public string x { get { return position.X.ToString(); } }
+        public string y { get { return position.Y.ToString(); } }
+        public int G_Cost { get { return gCost; } }
+        public int H_Cost { get {return hCost; } }
+
+        public int P_Cost {  get { return pCost; } }
         public int fCost
         {
-            get { return gCost + hCost; }
+            get { return gCost + hCost + pCost; }
 
         }
+        public int GridX { get { return gridX; } }
+        public int GridY { get { return gridY; } }
+
 
 
     }

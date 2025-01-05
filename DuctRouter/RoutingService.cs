@@ -4,14 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
- 
+using CsvHelper; 
+
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using System.Windows.Interop;    // namespace that contains all of the needed geometry manipulation and data structures from revit
+using System.Windows.Interop;
+using System.IO;
+using System.Globalization;    // namespace that contains all of the needed geometry manipulation and data structures from revit
 
 namespace DuctRouter.Solver
 {
-
     public class RoutingService
     {
 
@@ -28,26 +30,6 @@ namespace DuctRouter.Solver
             //  fudge factor to multiply to the max distance centerlines of duct main to terminals,
             //  with the goal of creating an easy way for making a "boundary" for the ducts to be solved within.
             //  this factor is necessary on the Z coordiante because duct elbows often will be larger than expected (radius requirements as a function of duct diameter)
-        private Axis _ductMainDir;
-        private enum Axis
-        {
-            X, Y, Z
-        }
-
-        private List<XYZ> InitializeGrid(List<XYZ> terminalLocations, double gridSize = 0.25)
-        {
-            //snap terminals to grid 
-            for (int i = 0; i < terminalLocations.Count; i++)    
-            {
-                var t = terminalLocations[i];
-                var x = Math.Round(t.X * (1 / gridSize), MidpointRounding.AwayFromZero) / (1 / gridSize);
-                var y = Math.Round(t.Y * (1 / gridSize), MidpointRounding.AwayFromZero) / (1/ gridSize);
-
-                terminalLocations[i] = new XYZ(x, y, t.Z);
-            }
-            return terminalLocations;
-            
-        }
 
         public RoutingService(BoundingBoxXYZ ductBBox, List<XYZ> terminalLocations, int clearance = 0, int multiplier = 1)
         {
@@ -94,13 +76,6 @@ namespace DuctRouter.Solver
             _xMin = newRect[3].Item1;
             _yMin = newRect[3].Item2;
 
-            Debug.WriteLine("X MAX " + _xMax);
-            Debug.WriteLine("X MIN " + _xMin);
-            Debug.WriteLine("Y MAX " + _yMax);
-            Debug.WriteLine("Y MIN " + _yMax);
-            Debug.WriteLine("Z MAX " + _zMax);
-            Debug.WriteLine("Z MIN " + _zMax);
-
         }
 
         private (double,double)[] scaleRectangle((double, double)[] coordinates, double multiplier)
@@ -130,7 +105,6 @@ namespace DuctRouter.Solver
             return transformedCoords;
 
         }
-
         public string DebugHandler()
         {
             return "X MAX " + _xMax + "\n" +
@@ -167,6 +141,7 @@ namespace DuctRouter.Solver
             var PathFinder = new Pathfinder(grid);
 
             var nodes = PathFinder.FindPath(startLoc, endLoc);
+            WriteResultsCSV(nodes, $"AStar_Results_8");
 
             foreach (var item in nodes)
             {
@@ -180,20 +155,15 @@ namespace DuctRouter.Solver
             return mymsg;
         }
 
-        private Axis DuctMainDir()
+        private void WriteResultsCSV(List<Node> records, string name)
         {
-            var boundsLower = _ductBounds[0];
-            var boundsUpper = _ductBounds[1];
-            var xSpan = Math.Abs(boundsUpper.X - boundsLower.X);
-            var ySpan = Math.Abs(boundsUpper.Y - boundsLower.Y);
-
-            //if (xSpan > ySpan) _ductMainDir = Axis.X;
-            //else _ductMainDir = Axis.Y;
-
-            if (xSpan > ySpan) return Axis.X;
-            else return Axis.Y;
+            using (var writer = new StreamWriter($"C:\\Users\\jcunniff\\source\\repos\\DuctRouter\\data\\{name}.csv"))
+            using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+            {
+                csv.WriteRecords(records);
+            }
+            
         }
-
 
 
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -21,7 +22,8 @@ namespace DuctRouter
             Document doc = uiDoc.Document;
             try
             {
-                //DuctRouteUI mainWindow = new DuctRouteUI(doc, uiDoc);
+
+                AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CommandLoad_AssemblyResolve);
                 DuctRouteUI mainWindow = new DuctRouteUI(commandData);
                 mainWindow.Show();
                 return Result.Succeeded;
@@ -31,6 +33,19 @@ namespace DuctRouter
                 TaskDialog.Show("ERROR", "DUCTROUTER FAILED TO EXECUTE");
                 return Result.Failed;
             }
+        }
+
+        private Assembly CommandLoad_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            if (args.Name.Contains("CsvHelper"))
+            {
+                string assemblyFile = "C:\\Users\\jcunniff\\source\\repos\\DuctRouter\\DuctRouter\\bin\\Debug\\CsvHelper.dll";
+                if (File.Exists(assemblyFile))
+                    return Assembly.LoadFrom(assemblyFile);
+                else 
+                    return null;
+            }
+            else return null;
         }
     }
 
